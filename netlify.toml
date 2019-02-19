@@ -1,4 +1,7 @@
-
+[[redirects]]
+from = "https://indeps.mon-entreprise.fr/*"
+to = "https://demo.mon-entreprise.fr/:splat"
+status = 301
 
 # InFrance PRODUCTION settings
 
