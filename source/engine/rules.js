@@ -43,39 +43,30 @@ import possibleVariableTypes from './possibleVariableTypes.yaml'
 // Enrichissement de la règle avec des informations évidentes pour un lecteur humain
 export let enrichRule = (rule, sharedData = {}) => {
 	try {
-		let type = possibleVariableTypes.find(t => has(t, rule) || rule.type === t),
-			name = rule['nom'],
-			title = capitalise0(rule['titre'] || name),
-			ns = rule['espace'],
-			data = rule['données'] ? sharedData[rule['données']] : null,
-			dottedName = buildDottedName(rule),
-			subquestionMarkdown = rule['sous-question'],
-			subquestion = subquestionMarkdown && marked(subquestionMarkdown),
-			defaultValue = rule['par défaut'],
-			examples = rule['exemples'],
-			icon = rule['icônes'],
-			shortDescription = rule['description courte']
-
 		return {
 			...rule,
-			type,
-			name,
-			title,
-			ns,
-			data,
-			dottedName,
-			subquestion,
-			defaultValue,
+			type: possibleVariableTypes.find(t => has(t, rule) || rule.type === t),
+			name: rule['nom'],
+			title: capitalise0(rule['titre'] || name),
+			ns: rule['espace'],
+			data: rule['données'] ? sharedData[rule['données']] : null,
+			dottedName: buildDottedName(rule),
+			subquestion: rule['sous-question'] && marked(rule['sous-question']),
+			defaultValue: rule['par défaut'],
 			raw: rule,
-			examples,
-			icon,
-			shortDescription
+			examples: rule['exemples'],
+			icons: rule['icônes'],
+			shortDescription: rule['description courte'],
+			format: rule['format'] || 'booléen',
+			humanValue: humanValue(rule['format'], rule['unit'])
 		}
 	} catch (e) {
 		console.log(e)
 		throw new Error('Problem enriching ' + JSON.stringify(rule))
 	}
 }
+
+let humanValue = lang => 'haha je ne suis pas implémenté'
 
 export let buildDottedName = rule =>
 	rule['espace'] ? [rule['espace'], rule['nom']].join(' . ') : rule['nom']
