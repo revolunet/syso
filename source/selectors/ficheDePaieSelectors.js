@@ -194,12 +194,7 @@ function analysisToFicheDePaie(
 			'contrat salarié . rémunération . net imposable'
 		),
 		salaireNet: règleAvecMontant('contrat salarié . salaire . net'),
-		nombreHeuresTravaillées: Math.round(
-			// $FlowFixMe
-			règleAvecValeur('contrat salarié . temps partiel . heures par semaine')
-				.valeur * 4.33
-		),
-		impôt: règleAvecMontant('impôt . neutre'),
+		nombreHeuresTravaillées: 		impôt: règleAvecMontant('impôt . neutre'),
 		salaireNetAprèsImpôt: règleAvecMontant(
 			'contrat salarié . salaire . net après impôt'
 		)

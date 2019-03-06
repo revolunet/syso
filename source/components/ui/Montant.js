@@ -24,14 +24,7 @@ const Montant = ({
 	style = {}
 }: Props) => (
 	<span className={'montant ' + className} style={style}>
-		{value === 0 || Number.isNaN(value)
-			? '—'
-			: Intl.NumberFormat(language, {
-					style: type,
-					currency: 'EUR',
-					maximumFractionDigits: numFractionDigit,
-					minimumFractionDigits: numFractionDigit
-			  }).format(value)}
+		{value === 0 ? '—' : value}
 	</span>
 )
 
