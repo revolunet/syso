@@ -1,9 +1,9 @@
 /* @flow */
 
-import Distribution from 'Components/Distribution';
-import PaySlip from 'Components/PaySlip';
-import React, { Component } from 'react';
-import { Trans } from 'react-i18next';
+import Distribution from 'Components/Distribution'
+import PaySlip from 'Components/PaySlip'
+import React, { Component } from 'react'
+import { Trans } from 'react-i18next'
 
 type Props = {
 	arePreviousAnswers: boolean,
@@ -50,7 +50,7 @@ export default class SalaryFirstExplanation extends Component<Props> {
 							: 'Détail annuel des cotisations'}
 					</Trans>
 				</h2>
-				<PaySlip />
+				{/*				<PaySlip />*/}
 			</>
 		)
 	}

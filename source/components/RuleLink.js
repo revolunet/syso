@@ -17,7 +17,7 @@ type Props = Règle & {
 }
 const RuleLink = ({
 	dottedName,
-	nom,
+	name,
 	colours: { colour },
 	style,
 	sitePaths
@@ -29,7 +29,7 @@ const RuleLink = ({
 			to={newPath}
 			className="rule-link"
 			style={{ color: colour, ...style }}>
-			{capitalise0(nom)}
+			{capitalise0(name)}
 		</Link>
 	)
 }

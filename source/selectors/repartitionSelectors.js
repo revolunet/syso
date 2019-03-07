@@ -97,7 +97,7 @@ function applyReduction(
 	return mapObjIndexed(
 		({ partPatronale, partSalariale }, branche) => ({
 			partPatronale: brancheConcernéeParLaRéduction.find(equals(branche))
-				? partPatronale - (partPatronale / totalPatronal) * réduction.montant
+				? partPatronale - (partPatronale / totalPatronal) * réduction.nodeValue
 				: partPatronale,
 			partSalariale
 		}),
@@ -111,7 +111,6 @@ const répartition = (analysis): ?Répartition => {
 	let cotisations: { [Branche]: Array<Cotisation> } = fromPairs(
 		analysisToCotisations(analysis)
 	)
-	console.log(cotisations)
 
 	const getRule = getRuleFromAnalysis(analysis),
 		salaireNet = getRule('contrat salarié . salaire . net'),
@@ -145,7 +144,6 @@ const répartition = (analysis): ?Répartition => {
 		// $FlowFixMe
 		répartition: compose(
 			sort(byMontantTotal),
-			map(([dottedName, cotisation]) => [getRule(dottedName), cotisation]),
 			Object.entries,
 			filter(
 				({ partPatronale, partSalariale }) =>
