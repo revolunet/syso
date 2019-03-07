@@ -10,12 +10,6 @@ let pourcentage = {
 	validator: number
 }
 
-let euros = {
-	suffix: '€',
-	human: value => value + ' ' + '€',
-	validator: number
-}
-
 let mois = {
 	suffix: 'mois',
 	human: value => value + ' ' + 'mois',
@@ -28,9 +22,27 @@ let jours = {
 	validator: int
 }
 
+let numberFormatter = style => (value, language) =>
+	Intl.NumberFormat(language, {
+		style,
+		currency: 'EUR',
+		maximumFractionDigits: 2,
+		minimumFractionDigits: 2
+	}).format(value)
+
 let nombre = {
-	human: value => value.replace(/./g, ','),
+	human: numberFormatter('decimal'),
 	validator: int
+}
+
+let euros = {
+	suffix: '€',
+	human: numberFormatter('currency'),
+	validator: number
+}
+
+let booléen = {
+	human: (value, language) => ({ true: 'Oui', false: 'Non' }[value])
 }
 
 let texte = {
@@ -44,5 +56,6 @@ export default {
 	mois,
 	jours,
 	nombre,
-	texte
+	texte,
+	booléen
 }

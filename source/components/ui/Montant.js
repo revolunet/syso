@@ -20,7 +20,6 @@ const Montant = ({
 	numFractionDigit = 2,
 	children: value,
 	className = '',
-	type = 'currency',
 	style = {}
 }: Props) => (
 	<span className={'montant ' + className} style={style}>

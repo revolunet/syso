@@ -58,7 +58,7 @@ export let enrichRule = (rule, sharedData = {}) => {
 			icons: rule['icônes'],
 			shortDescription: rule['description courte'],
 			format: rule['format'] || 'booléen',
-			humanValue: humanValue(rule['format'], rule['unit'])
+			humanValue: humanValue(rule['format'])
 		}
 	} catch (e) {
 		console.log(e)
@@ -66,7 +66,8 @@ export let enrichRule = (rule, sharedData = {}) => {
 	}
 }
 
-let humanValue = lang => 'haha je ne suis pas implémenté'
+export let humanValue = ({ format, nodeValue }) => language =>
+	'haha je ne suis pas implémenté'
 
 export let buildDottedName = rule =>
 	rule['espace'] ? [rule['espace'], rule['nom']].join(' . ') : rule['nom']
