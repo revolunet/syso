@@ -15,12 +15,10 @@ import {
 	values
 } from 'ramda'
 import { createSelector } from 'reselect'
-import { analysisWithDefaultsSelector } from 'Selectors/analyseSelectors'
 import {
-	règleAvecMontantSelector,
-	règleAvecValeurSelector,
-	règleLocaliséeSelector
-} from 'Selectors/regleSelectors'
+	getRuleFromAnalysis,
+	analysisWithDefaultsSelector
+} from 'Selectors/analyseSelectors'
 
 import type { Analysis } from 'Types/Analysis'
 import type {
@@ -30,8 +28,11 @@ import type {
 	Branche,
 	FicheDePaie
 } from 'Types/ResultViewTypes'
+import { findRuleByDottedName } from 'Engine/rules'
 
 import type { Règle } from 'Types/RegleTypes'
+
+// These functions help build the payslip. They take the cotisations from the cache, braving all the particularities of the current engine's implementation, handles the part patronale and part salariale, and gives a map by branch.
 
 export const COTISATION_BRANCHE_ORDER: Array<Branche> = [
 	'protection sociale . santé',
@@ -50,10 +51,8 @@ export const BLANK_COTISATION: Cotisation = {
 		partPatronale: 0,
 		partSalariale: 0
 	},
-	id: 'ERROR_SHOULD_BE_INSTANCIATED',
-	type: 'euros',
-	nom: 'ERROR_SHOULD_BE_INSTANCIATED',
-	lien: 'ERROR_SHOULD_BE_INSTANCIATED',
+	dottedName: 'ERROR_SHOULD_BE_INSTANCIATED',
+	title: 'ERROR_SHOULD_BE_INSTANCIATED',
 	branche: 'protection sociale . autres'
 }
 
@@ -89,11 +88,9 @@ export const mergeCotisations: (
 	key === 'montant' ? mergeWith(add, a, b) : b
 )
 
-const variableToCotisation = (règleLocaliséeSelector: string => Règle) => (
-	variable: VariableWithCotisation
-): Cotisation => {
+const variableToCotisation = (variable: VariableWithCotisation): Cotisation => {
 	return mergeCotisations(BLANK_COTISATION, {
-		...règleLocaliséeSelector(variable.dottedName),
+		...variable,
 		branche: brancheSelector(variable),
 		montant: {
 			[duParSelector(variable) === 'salarié'
@@ -102,7 +99,7 @@ const variableToCotisation = (règleLocaliséeSelector: string => Règle) => (
 		}
 	})
 }
-const groupByBranche = (règleLocaliséeSelector: string => Règle) => (
+const groupByBranche = flatRules => (
 	cotisations: Array<Cotisation>
 ): Cotisations => {
 	const cotisationsMap = cotisations.reduce(
@@ -113,15 +110,16 @@ const groupByBranche = (règleLocaliséeSelector: string => Règle) => (
 		{}
 	)
 	return COTISATION_BRANCHE_ORDER.map(branche => [
-		règleLocaliséeSelector(branche),
+		branche,
 		// $FlowFixMe
 		cotisationsMap[branche]
 	])
 }
-const analysisToCotisations = (
-	analysis: Analysis,
-	règleLocaliséeSelector: string => Règle
-): Cotisations => {
+export const analysisToCotisationsSelector = createSelector(
+	[analysisWithDefaultsSelector],
+	analysisToCotisations
+)
+export let analysisToCotisations = analysis => {
 	const variables = [
 		'contrat salarié . cotisations . salariales',
 		'contrat salarié . cotisations . patronales'
@@ -135,7 +133,7 @@ const analysisToCotisations = (
 		values,
 		map(
 			pipe(
-				map(variableToCotisation(règleLocaliséeSelector)),
+				map(variableToCotisation),
 				reduce(mergeCotisations, BLANK_COTISATION)
 			)
 		),
@@ -144,18 +142,8 @@ const analysisToCotisations = (
 				cotisation.montant.partPatronale !== 0 ||
 				cotisation.montant.partSalariale !== 0
 		),
-		groupByBranche(règleLocaliséeSelector),
+		groupByBranche(analysis),
 		filter(([, brancheCotisation]) => !!brancheCotisation)
 	)(variables)
 	return cotisations
 }
-// $FlowFixMe
-export default createSelector(
-	[
-		règleAvecMontantSelector,
-		règleAvecValeurSelector,
-		règleLocaliséeSelector,
-		analysisWithDefaultsSelector
-	],
-	analysisToFicheDePaie
-)

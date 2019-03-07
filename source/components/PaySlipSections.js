@@ -1,6 +1,6 @@
 import { React, T } from 'Components'
-import RuleLink from './ui/RuleLink'
-import Montant from './ui/Montant'
+import RuleLink from './RuleLink'
+import Montant from 'Ui/Montant'
 
 export let SalaireBrutSection = ({ getRule }) => {
 	let avantagesEnNature = getRule(

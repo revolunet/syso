@@ -14,6 +14,7 @@ import {
 import { analyse, analyseMany, parseAll } from 'Engine/traverse'
 import {
 	add,
+	propEq,
 	contains,
 	difference,
 	equals,
@@ -276,3 +277,20 @@ export let currentQuestionSelector = createSelector(
 		(priorityNamespace && nextSteps.find(contains(priorityNamespace))) ||
 		head(nextSteps)
 )
+
+export let getRuleFromAnalysis = analysis => (dottedName: string) => {
+	if (!analysis) {
+		throw new Error(
+			`[règleValeurSelector] L'analyse fournie ne doit pas être 'undefined' ou 'null'`
+		)
+	}
+	let rule =
+		analysis.cache[dottedName] ||
+		analysis.targets.find(propEq('dottedName', dottedName))
+
+	if (!rule) {
+		throw new Error(`[ruleSelector] Unable to find the rule ${dottedName}`)
+	}
+
+	return rule
+}

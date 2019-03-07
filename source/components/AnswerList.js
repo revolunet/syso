@@ -11,10 +11,13 @@ import emoji from 'react-easy-emoji'
 import { Trans } from 'react-i18next'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { règleAvecValeurSelector } from 'Selectors/regleSelectors'
 import Montant from 'Ui/Montant'
 import { softCatch } from '../utils'
 import './AnswerList.css'
+import {
+	analysisWithDefaultsSelector,
+	getRuleFromAnalysis
+} from 'Selectors/analyseSelectors'
 
 const formatAnswer = (answer, language) => {
 	if (answer.type === 'boolean')
@@ -87,8 +90,9 @@ const AnswerList = ({
 
 const answerWithValueSelector = createSelector(
 	state => state.conversationSteps.foldedSteps,
-	règleAvecValeurSelector,
-	(answers, getRègle) => answers.map(softCatch(getRègle)).filter(Boolean)
+	analysisWithDefaultsSelector,
+	(answers, analysis) =>
+		answers.map(softCatch(getRuleFromAnalysis(analysis))).filter(Boolean)
 )
 
 export default compose(

@@ -8,10 +8,12 @@ import RuleLink from 'Components/RuleLink'
 import React from 'react'
 import { connect } from 'react-redux'
 import { config } from 'react-spring'
-import { branchAnalyseSelector } from 'Selectors/analyseSelectors'
-import { règleAvecMontantSelector } from 'Selectors/regleSelectors'
+import {
+	noUserInputSelector,
+	getRuleFromAnalysis,
+	branchAnalyseSelector
+} from 'Selectors/analyseSelectors'
 import Animate from 'Ui/animate'
-import { noUserInputSelector } from '../selectors/analyseSelectors'
 import './ComparativeTargets.css'
 import SchemeCard from './ui/SchemeCard'
 
@@ -23,9 +25,9 @@ const connectRègles = (situationBranchName: string) =>
 			return ({
 				revenuDisponible:
 					!noUserInputSelector(state) &&
-					règleAvecMontantSelector(state, {
-						situationBranchName
-					})('revenu net')
+					getRuleFromAnalysis(
+						branchAnalyseSelector(state, { situationBranchName })
+					)('revenu net')
 			}: {
 				revenuDisponible: boolean | RègleAvecMontant
 			})

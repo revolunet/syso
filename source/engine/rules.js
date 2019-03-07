@@ -47,7 +47,7 @@ export let enrichRule = (rule, sharedData = {}) => {
 			...rule,
 			type: possibleVariableTypes.find(t => has(t, rule) || rule.type === t),
 			name: rule['nom'],
-			title: capitalise0(rule['titre'] || name),
+			title: capitalise0(rule['titre'] || rule['nom']),
 			ns: rule['espace'],
 			data: rule['données'] ? sharedData[rule['données']] : null,
 			dottedName: buildDottedName(rule),
