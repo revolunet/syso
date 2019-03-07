@@ -149,57 +149,6 @@ const analysisToCotisations = (
 	)(variables)
 	return cotisations
 }
-
-// Custom values for flow type checking
-// https://github.com/facebook/flow/issues/2221
-function analysisToFicheDePaie(
-	règleAvecMontant,
-	règleAvecValeur,
-	règleLocalisée,
-	analysis
-): ?FicheDePaie {
-	if (!analysis.cache) {
-		return null
-	}
-	const cotisations = analysisToCotisations(analysis, règleLocalisée)
-	const cotisationsSalariales = règleAvecMontant(
-		'contrat salarié . cotisations . salariales'
-	)
-	const cotisationsPatronales = règleAvecMontant(
-		'contrat salarié . cotisations . patronales'
-	)
-	const réductionsDeCotisations = règleAvecMontant(
-		'contrat salarié . réductions de cotisations'
-	)
-	const totalCotisations = {
-		partPatronale:
-			cotisationsPatronales.montant - réductionsDeCotisations.montant,
-		partSalariale: cotisationsSalariales.montant
-	}
-	return {
-		salaireDeBase: règleAvecMontant('contrat salarié . salaire . brut de base'),
-		avantagesEnNature: règleAvecMontant(
-			'contrat salarié . avantages en nature . montant'
-		),
-		indemnitésSalarié: règleAvecMontant('contrat salarié . indemnités salarié'),
-		salaireBrut: règleAvecMontant('contrat salarié . rémunération . brut'),
-		cotisations,
-		réductionsDeCotisations,
-		totalCotisations,
-		salaireChargé: règleAvecMontant('contrat salarié . rémunération . total'),
-		salaireNetDeCotisations: règleAvecMontant(
-			'contrat salarié . rémunération . net de cotisations'
-		),
-		rémunérationNetteImposable: règleAvecMontant(
-			'contrat salarié . rémunération . net imposable'
-		),
-		salaireNet: règleAvecMontant('contrat salarié . salaire . net'),
-		nombreHeuresTravaillées: 		impôt: règleAvecMontant('impôt . neutre'),
-		salaireNetAprèsImpôt: règleAvecMontant(
-			'contrat salarié . salaire . net après impôt'
-		)
-	}
-}
 // $FlowFixMe
 export default createSelector(
 	[
