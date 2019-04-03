@@ -4,6 +4,25 @@ import 'react-select/dist/react-select.css'
 import { FormDecorator } from '../FormDecorator'
 import './Select.css'
 
+let versementTransportURL =
+	'https://www.urssaf.fr/portail/cms/render/live/fr/sites/urssaf/home/taux-et-baremes/versement-transport/middleColumn/versementtransport.calculVTAction.do?typeCode=isCodePostal&code='
+
+const tauxVersementTransport = codeCommune => {
+	return fetch(versementTransportURL + codeCommune, {
+		method: 'POST',
+		body: {
+			typeCode: 'isCodeCommune',
+			code: codeCommune
+		},
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			'User-Agent':
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36'
+		}
+	}).then(response => response.json())
+}
+
 let getOptions = input =>
 	input.length < 3
 		? Promise.resolve({ options: [] })
@@ -32,11 +51,13 @@ export default FormDecorator('select')(
 					submit
 				} = this.props,
 				submitOnChange = option => {
-					// serialize to not mix our data schema and the API response's
-					onChange(
-						JSON.stringify({ ...option, 'taux du versement transport': 999 })
-					)
-					submit()
+					tauxVersementTransport(option.code).then(code => {
+						// serialize to not mix our data schema and the API response's
+						onChange(
+							JSON.stringify({ ...option, 'taux du versement transport': 999 })
+						)
+						submit()
+					})
 				}
 
 			return (
